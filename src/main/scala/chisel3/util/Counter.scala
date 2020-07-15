@@ -8,19 +8,19 @@ import chisel3.internal.naming.chiselName  // can't use chisel3_ version because
 /** Used to generate an inline (logic directly in the containing Module, no internal Module is created)
   * hardware counter.
   *
-  * Typically instantiated with apply methods in [[Counter$ object Counter]]
+  * Typically instantiated with apply methods in [[Counter$ object Counter]].
   *
-  * Does not create a new Chisel Module
+  * Does not create a new Chisel Module.
   *
   * @example {{{
-  *   val countOn = true.B // increment counter every clock cycle
-  *   val (counterValue, counterWrap) = Counter(countOn, 4)
-  *   when (counterWrap) { // counterValue === 3.U
-  *     ...
-  *   }
-  * }}}
+  * val countOn = true.B // increment counter every clock cycle
+  * val (counterValue, counterWrap) = Counter(countOn, 4)
   *
-  * @param r the range of counter values
+  * when (counterWrap) {
+  *   // counterValues === 3.U
+  *   ...
+  * }
+  * }}}
   */
 @chiselName
 class Counter private (r: Range) {
@@ -69,18 +69,30 @@ class Counter private (r: Range) {
   }
 }
 
+/** A companion object for the `Counter` class.
+  *
+  * @example {{{
+  * val countOn = true.B // increment counter every clock cycle
+  * val (counterValue, counterWrap) = Counter(countOn, 0 to 9)
+  *
+  * when (counterWrap) {
+  *   // counterValues === 9.U
+  *   ...
+  * }
+  * }}}
+  */
 object Counter
 {
-  /** Instantiate a [[Counter! counter]] with the specified number of counts.
+  /** Creates a counter with the specified number of steps.
     *
-    * @param n number of counts before the counter resets
+    * @param n number of steps before the counter resets
     */
   def apply(n: Int): Counter = new Counter(n)
 
-  /** Instantiate a [[Counter! counter]] with the specified number of counts and a gate.
+  /** Creates a counter with the specified number of steps and a gate.
     *
     * @param cond condition that controls whether the counter increments this cycle
-    * @param n number of counts before the counter resets
+    * @param n number of steps before the counter resets
     * @return tuple of the counter value and whether the counter will wrap (the value is at
     * maximum and the condition is true).
     */
